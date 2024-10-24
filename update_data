@@ -19,7 +19,7 @@ set -e
 havecmd evry "Install with 'cargo install evry'"
 havecmd wait-for-internet "Install with 'cargo install wait-for-internet'"
 
-readonly REPO='https://github.com/seanbreckenridge/mal-id-cache'
+readonly REPO='https://github.com/purarue/mal-id-cache'
 readonly REPO_TARGET='./data/mal-id-cache'
 readonly HASH_FILE='./data/hash'
 

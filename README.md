@@ -10,7 +10,7 @@ This is a work in progress, but the basics are up at <https://sean.fish/dbsentin
 
 Data Sources:
 
-- [mal-id-cache](https://github.com/seanbreckenridge/mal-id-cache) git history, which is updated by [checker_mal](https://github.com/Hiyori-API/checker_mal). `checker_mal` also indexes the unapproved data, which this pings periodically to grab/find new approved entries from MAL
+- [mal-id-cache](https://github.com/purarue/mal-id-cache) git history, which is updated by [checker_mal](https://github.com/Hiyori-API/checker_mal). `checker_mal` also indexes the unapproved data, which this pings periodically to grab/find new approved entries from MAL
 - [MyAnimeList](https://myanimelist.net/), obviously, which this archives data from
 
 This is mostly meant to act as an public archive. Database guidelines are finicky and what is considered anime is not the same by all, so saving deleted and denied entries is useful for many reasons (re-submitting entries etc.)
@@ -40,7 +40,7 @@ This is mostly meant to act as an public archive. Database guidelines are finick
 - [ ] classifying chinese/korean/japanese entries
   - [ ] can use [chiefs tags](https://myanimelist.net/blog/MasterDChief) to get a list of chinese/korean entries, set difference that with <https://myanimelist.net/clubs.php?cid=42215> and <https://myanimelist.net/clubs.php?cid=41909> to find out which ones aren't on MAL. Can update that once a week and let it just be a static HTML page, which club owner can reference to add new things
   - [ ] API which receives an ID and returns if its a donghua/aeni, can be used with a userscript to add a tag to the page
-- [ ] integrate with [notify-bot](https://github.com/seanbreckenridge/mal-notify-bot)
+- [ ] integrate with [notify-bot](https://github.com/purarue/mal-notify-bot)
   - [x] refresh command refreshes both
   - [ ] so that sources added there get added to the website (also allow items which aren't in #feed -- so this can source anything) -- only show on website through a domain allowlist
 - [ ] cache data for people
