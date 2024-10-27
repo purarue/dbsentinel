@@ -52,7 +52,7 @@ class Unapproved(NamedTuple):
         return {info.id for info in self.manga_info}
 
 
-UNAPPROVED_API_BASE = "https://sean.fish/mal_unapproved/api/"
+UNAPPROVED_API_BASE = "https://purarue.xyz/mal_unapproved/api/"
 # UNAPPROVED_API_BASE = "http://localhost:4001/mal_unapproved/api/"
 
 SANITY_CHECK_AMOUNT = 10

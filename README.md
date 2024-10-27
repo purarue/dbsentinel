@@ -1,6 +1,6 @@
-A counterpart to <https://sean.fish/mal_unapproved/>. That lists entries that have yet to be approved, denied entries and deleted entries
+A counterpart to <https://purarue.xyz/mal_unapproved/>. That lists entries that have yet to be approved, denied entries and deleted entries
 
-This is a work in progress, but the basics are up at <https://sean.fish/dbsentinel>
+This is a work in progress, but the basics are up at <https://purarue.xyz/dbsentinel>
 
 ## Goals
 
