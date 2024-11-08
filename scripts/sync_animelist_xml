@@ -3,13 +3,26 @@
 ROOT_DIR="$(realpath "$(dirname "${BASH_SOURCE[0]}")"/..)"
 cd "${ROOT_DIR}/" || exit $?
 
+cmd_with_retry() {
+	local count=1
+	# shellcheck disable=SC2029
+	while ! "$@"; do
+		printf "Retrying (%d)...\n" "$count"
+		sleep 1
+		((count++))
+		if ((count > 5)); then
+			return 1
+		fi
+	done
+}
+
 # upload to _animelist.xml and then move to prevent broken files while uploading
 SOURCE="$HPIDATA/malexport/purplepinapples/animelist.xml"
 if [[ -f "$SOURCE" ]]; then
 	cp -v "$SOURCE" "$ROOT_DIR/data/animelist.xml"
 	echo "Uploading $SOURCE"
-	rsync -avz -e ssh "$SOURCE" vultr:~/code/dbsentinel/data/_animelist.xml &&
-		ssh vultr 'mv -v ~/code/dbsentinel/data/_animelist.xml ~/code/dbsentinel/data/animelist.xml'
+	cmd_with_retry rsync -avz -e ssh "$SOURCE" vultr:~/code/dbsentinel/data/_animelist.xml &&
+		cmd_with_retry ssh vultr 'mv -v ~/code/dbsentinel/data/_animelist.xml ~/code/dbsentinel/data/animelist.xml'
 else
 	echo "File not found: $SOURCE"
 fi
