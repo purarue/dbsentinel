@@ -3,10 +3,6 @@ from mal_id.paths import arm_dir
 from pydantic import BaseModel
 
 
-arm_file = (arm_dir / "arm.json").absolute()
-assert arm_file.exists()
-
-
 class Arm(BaseModel):
     mal_id: int | None
     anilist_id: int | None
@@ -19,6 +15,9 @@ class Arm(BaseModel):
 
 
 def arm_dump(filter_mal_id: bool = True) -> list[Arm]:
+    arm_file = (arm_dir / "arm.json").absolute()
+    assert arm_file.exists()
+
     data = orjson.loads(arm_file.read_bytes())
     objs = [Arm.parse_obj(v) for v in data]
     if filter_mal_id:
