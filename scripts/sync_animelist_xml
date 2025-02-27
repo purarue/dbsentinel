@@ -8,8 +8,7 @@ SOURCE="$HPIDATA/malexport/purplepinapples/animelist.xml"
 if [[ -f "$SOURCE" ]]; then
 	cp -v "$SOURCE" "$ROOT_DIR/data/animelist.xml"
 	echo "Uploading $SOURCE"
-	retry -- rsync -avz -e ssh "$SOURCE" vultr:~/code/dbsentinel/data/_animelist.xml &&
-		retry -- ssh vultr 'mv -v ~/code/dbsentinel/data/_animelist.xml ~/code/dbsentinel/data/animelist.xml'
+	retry -- rsync --timeout=5 -Pavz -e ssh "$SOURCE" vultr:~/code/dbsentinel/data/animelist.xml
 else
 	echo "File not found: $SOURCE"
 fi
