@@ -3,6 +3,7 @@ import json
 import time
 import shutil
 import atexit
+import asyncio
 from typing import cast
 from pathlib import Path
 from urllib.parse import urlparse
@@ -60,6 +61,8 @@ def _prefix_url(path: str) -> str:
 
 @backoff.on_exception(backoff.expo, httpx.HTTPError, max_tries=3)
 async def _get_image_bytes(url: str) -> bytes | None:
+    await asyncio.sleep(3)
+
     # sometimes the image 301 redirects to what looks
     # to be MALs internal image server, which is not
     # SSL enabled properly....

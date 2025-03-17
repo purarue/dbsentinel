@@ -14,6 +14,7 @@ from mal_id.paths import mal_id_cache_dir, unapproved_anime_path, unapproved_man
 from mal_id.log import logger
 from mal_id.common import backoff_handler
 from mal_id.parse_xml import parse_user_ids
+from mal_id.metadata_cache import MAL_API_LOCK
 
 
 class Approved(NamedTuple):
@@ -239,8 +240,9 @@ def estimate_deleted_entry(animelist_xml: Path) -> int:
     sorted_ids = sorted(anime_ids, reverse=True)
 
     for mid in sorted(deleted_ids):
-        resp = sess.session.get(f"https://api.myanimelist.net/v2/anime/{mid}")
-        time.sleep(1)
+        with MAL_API_LOCK:
+            resp = sess.session.get(f"https://api.myanimelist.net/v2/anime/{mid}")
+        time.sleep(3)
         if resp.status_code == 401:
             sess.refresh_token()
             return estimate_deleted_entry(animelist_xml)

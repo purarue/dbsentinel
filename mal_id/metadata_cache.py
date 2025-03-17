@@ -27,8 +27,8 @@ MAL_API_LOCK = Lock()
 
 
 def api_request(session: MalSession, url: str, recursed_times: int = 0) -> Any:
+    time.sleep(3)
     with MAL_API_LOCK:
-        time.sleep(1)
         resp: requests.Response = session.session.get(url)
 
     # sometimes 400 happens if the alternative titles are empty
@@ -57,7 +57,7 @@ def api_request(session: MalSession, url: str, recursed_times: int = 0) -> Any:
             raise MALIsDownError("MAL returned 504 for entry, skipping for now")
         else:
             logger.warning(f"{url} recieved a 504, waiting and retrying once")
-            time.sleep(5)
+            time.sleep(10)
             return api_request(session, url, recursed_times + 1)
 
     # for any other error, backoff for a minute and then retry

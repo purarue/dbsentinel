@@ -18,7 +18,7 @@ This is mostly meant to act as an public archive. Database guidelines are finick
 ### TODO:
 
 - [x] refresh data based on last updated date
-- [x] frontend in pheonix
+- [x] frontend in phoenix
   - [ ] register/login
   - [ ] moderators/trusted users
     - [ ] parse reasons for denials/deletions from thread/allow users to input
@@ -48,7 +48,8 @@ This is mostly meant to act as an public archive. Database guidelines are finick
 ## Incomplete setup instructions:
 
 - Check [app/settings.py](app/settings.py) for the required environment variables
-- Create a venv at .venv: `python3 -m virtualenv .venv`
+- install python3.10.2 through [pyenv](https://github.com/pyenv/pyenv)
+- Create a python virtualenv at `.venv` using that python: `python3 -m virtualenv .venv --python ~/.pyenv/versions/3.10.1/bin/python3`
 - `source .venv/bin/activate`
 - `pip install -r requirements.txt`
 - [`checker_mal`](https://github.com/Hiyori-API/checker_mal) could be running on the same machine, if you want to keep an updated anime/manga ID list locally:
