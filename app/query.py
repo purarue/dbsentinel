@@ -267,9 +267,11 @@ class DumpOutEntry(BaseModel):
     nsfw: bool | None
 
 
-@router.get("/dump/{entry_type}/{approved_status}")
+@router.get("/dump/")
 async def dump(
-    entry_type: EntryType, approved_status: StatusIn, sess: Session = Depends(get_db)
+    entry_type: EntryType = EntryType.ANIME,
+    approved_status: StatusIn = StatusIn.ALL,
+    sess: Session = Depends(get_db),
 ) -> list[DumpOutEntry]:
     logger.info(f"dump: {entry_type} {approved_status}")
     entry_type = EntryType.from_str(entry_type)
