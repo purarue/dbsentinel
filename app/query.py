@@ -250,7 +250,40 @@ async def media_query_by_id(
 
     return ByIdRawOut(
         id=row.id,
-        title=row.title,
         proxied_image=image.proxied_url if image else None,
         json_data=row.json_data,
     )
+
+
+class Dump(BaseModel):
+    entry_type: EntryType = Field(default=EntryType.ANIME)
+    approved_status: StatusIn = Field(default=StatusIn.ALL)
+
+
+class DumpOutEntry(BaseModel):
+    id: int
+    title: str
+    approved_status: Status
+    nsfw: bool
+
+
+@router.post("/dump/{entry_type}/{approved_status}")
+async def dump(
+    entry_type: EntryType, approved_status: StatusIn, sess: Session = Depends(get_db)
+) -> list[DumpOutEntry]:
+    logger.info(f"dump: {entry_type} {approved_status}")
+    entry_type = EntryType.from_str(entry_type)
+    model = AnimeMetadata if entry_type == EntryType.ANIME else MangaMetadata
+
+    query = select(model)
+    if approved_status != StatusIn.ALL:
+        query = query.where(model.approved_status == approved_status)
+
+    rows = sess.exec(query).all()  # type: ignore
+
+    return [
+        DumpOutEntry(
+            id=r.id, title=r.title, approved_status=r.approved_status, nsfw=r.nsfw
+        )
+        for r in rows
+    ]
