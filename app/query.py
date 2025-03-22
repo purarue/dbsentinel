@@ -264,7 +264,7 @@ class DumpOutEntry(BaseModel):
     id: int
     title: str
     approved_status: Status
-    nsfw: bool
+    nsfw: bool | None
 
 
 @router.post("/dump/{entry_type}/{approved_status}")
@@ -279,7 +279,7 @@ async def dump(
     if approved_status != StatusIn.ALL:
         query = query.where(model.approved_status == approved_status)
 
-    rows = sess.exec(query).all()  # type: ignore
+    rows: List[ApprovedBase] = sess.exec(query).all()  # type: ignore
 
     return [
         DumpOutEntry(
