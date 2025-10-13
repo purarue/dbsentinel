@@ -9,7 +9,7 @@ from malexport.parse.common import parse_date_safe
 from sqlalchemy import update
 from sqlmodel import Session
 from sqlmodel.sql.expression import select
-from url_cache.core import Summary
+from url_cache.model import Summary
 
 from mal_id.metadata_cache import request_metadata
 from mal_id.linear_history import iter_linear_history, Entry
@@ -88,7 +88,7 @@ def is_nsfw(jdata: Dict[str, Any]) -> Optional[bool]:
     return None
 
 
-def _get_img_url(data: dict) -> str | None:
+def _get_img_url(data: dict[str, Any]) -> str | None:
     if img := data.get("medium"):
         assert isinstance(img, str)
         return img
@@ -117,8 +117,8 @@ async def add_or_update(
     entry_id: int,
     current_approved_status: Status | None = None,
     old_status: Optional[Status] = None,
-    in_db: Optional[Set[int]] = None,
-    status_changed_at: Optional[datetime] = None,
+    in_db: set[int] | None = None,
+    status_changed_at: datetime | None = None,
     force_update: bool = False,
     mal_id_to_image: Optional[Dict[Tuple[EntryType, int], ImageData]] = None,
     refresh_images: bool = False,
@@ -367,7 +367,7 @@ def malid_to_image() -> Dict[Tuple[EntryType, int], ImageData]:
         }
 
 
-def parse_datetime_from_dict(data: dict, key: str) -> Optional[datetime]:
+def parse_datetime_from_dict(data: dict[str, Any], key: str) -> datetime | None:
     if key in data:
         try:
             return to_utc(datetime.fromisoformat(data[key]))
@@ -437,7 +437,7 @@ async def update_database(
         r_appearances.sort(key=lambda x: x.dt)
 
         assert r_type in ("anime", "manga")
-        approved_use: Set[int] = approved.anime if r_type == "anime" else approved.manga
+        approved_use: set[int] = approved.anime if r_type == "anime" else approved.manga
 
         # if its in the linear history, it was approved at one point
         # but it may not be anymore
