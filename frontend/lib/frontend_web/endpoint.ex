@@ -18,7 +18,7 @@ defmodule FrontendWeb.Endpoint do
   # You should set gzip to true if you are running phx.digest
   # when deploying your static files in production.
   plug(Plug.Static,
-    at: Application.compile_env(:frontend, :static_url, "/dbsentinel_assets"),
+    at: Application.compile_env(:frontend, :base_url, "/dbentinel/"),
     from: :frontend,
     gzip: false,
     only: FrontendWeb.static_paths()

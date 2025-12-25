@@ -13,7 +13,7 @@
       href={
         Routes.static_path(
           @conn,
-          Application.get_env(:frontend, :static_url, "/") <> "/assets/app.css"
+          Application.get_env(:frontend, :base_url, "/") <> "assets/app.css"
         )
       }
     />
@@ -24,7 +24,7 @@
       src={
         Routes.static_path(
           @conn,
-          Application.get_env(:frontend, :static_url, "/") <> "/assets/app.js"
+          Application.get_env(:frontend, :base_url, "/") <> "assets/app.js"
         )
       }
     >
