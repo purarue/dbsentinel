@@ -35,14 +35,14 @@ class StatusIn(str, enum.Enum):
 class QueryModelOut(BaseModel):
     id: int
     title: str
-    nsfw: Optional[bool]
-    image_url: Optional[str]
-    alternate_titles: Dict[str, Any]
-    json_data: Dict[str, Any]
-    media_type: Optional[str]
+    nsfw: bool | None
+    image_url: str | None
+    alternate_titles: dict[str, Any]
+    json_data: dict[str, Any]
+    media_type: str | None
     approved_status: Status
-    member_count: Optional[int]
-    average_episode_duration: Optional[int]
+    member_count: int | None
+    average_episode_duration: int | None
     metadata_updated_at: float
     status_updated_at: float
     start_date: str | None
@@ -52,7 +52,7 @@ class QueryModelOut(BaseModel):
 class QueryOut(BaseModel):
     entry_type: EntryType
     total_count: int
-    results: List[QueryModelOut]
+    results: list[QueryModelOut]
 
 
 class QueryInOrderBy(str, enum.Enum):
@@ -72,11 +72,11 @@ class QueryInSort(str, enum.Enum):
 
 
 class QueryIn(BaseModel):
-    title: Optional[str] = Field(min_length=1)
+    title: str | None = Field(min_length=1)
     entry_type: EntryType = Field(default=EntryType.ANIME)
-    media_type: Optional[str]
-    nsfw: Optional[bool]
-    json_data: Optional[Dict[str, Union[str, int, bool]]]
+    media_type: str | None
+    nsfw: bool | None
+    json_data: dict[str, str | int | bool] | None
     approved_status: StatusIn = Field(default=StatusIn.ALL)
     order_by: QueryInOrderBy = Field(default=QueryInOrderBy.ID)
     sort: QueryInSort = Field(default=QueryInSort.DESC)
@@ -84,7 +84,7 @@ class QueryIn(BaseModel):
     offset: int = Field(default=0)
 
 
-def _serialize_date(dd: date | None) -> Optional[str]:
+def _serialize_date(dd: date | None) -> str | None:
     if dd is None:
         return None
     return dd.isoformat()
@@ -98,14 +98,14 @@ APPROVED_KEYS = {
 
 
 # dont just mirror all data for approved entries, just link to the page
-def _filter_keys_for_status(d: Dict[str, Any], status: Status) -> Dict[str, Any]:
+def _filter_keys_for_status(d: dict[str, Any], status: Status) -> dict[str, Any]:
     if status == Status.APPROVED:
         return {k: d[k] for k in d if k in APPROVED_KEYS}
     else:
         return d
 
 
-def _pick_image(metadata: ApprovedBase, proxied: ProxiedImage | None) -> Optional[str]:
+def _pick_image(metadata: ApprovedBase, proxied: ProxiedImage | None) -> str | None:
     if proxied is None:
         return _get_img_url(metadata.json_data.get("main_picture", {}))
     if metadata.approved_status == Status.APPROVED:
@@ -207,7 +207,7 @@ class ByIdQueryIn(BaseModel):
 
 class ByIdRawOut(BaseModel):
     id: int
-    proxied_image: Optional[str]
+    proxied_image: str | None
     json_data: dict
 
 
@@ -281,7 +281,7 @@ async def dump(
     if approved_status != StatusIn.ALL:
         query = query.where(model.approved_status == approved_status)
 
-    rows: List[ApprovedBase] = sess.exec(query).all()  # type: ignore
+    rows: list[ApprovedBase] = sess.exec(query).all()  # type: ignore
 
     return [
         DumpOutEntry(

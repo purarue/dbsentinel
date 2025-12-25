@@ -25,7 +25,7 @@ class AnilistCache(URLCache):
         return super().preprocess_url(uurl)
 
     @staticmethod
-    def fetch_anilist_data(mal_id: int, media_type: str) -> Optional[Dict[str, Any]]:
+    def fetch_anilist_data(mal_id: int, media_type: str) -> dict[str, Any] | None:
         query = """query($id: Int, $type: MediaType){Media(idMal: $id, type: $type){
             id
             idMal
@@ -77,7 +77,7 @@ class AnilistCache(URLCache):
         if response.status_code > 400 and response.status_code < 500:
             logger.warning(f"Anilist returned {response.status_code}, not found")
             return None
-        data: Dict[str, Any] = response.json()["data"]["Media"]
+        data: dict[str, Any] = response.json()["data"]["Media"]
         return data
 
     @staticmethod
