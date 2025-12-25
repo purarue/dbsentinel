@@ -27,8 +27,8 @@ class Status(BaseModel):
 
 
 class MetadataCountOut(BaseModel):
-    anime: List[Status]
-    manga: List[Status]
+    anime: list[Status]
+    manga: list[Status]
 
 
 @router.get("/", response_model=MetadataCountOut)

@@ -16,7 +16,7 @@ arm_dir = data_dir / "arm"
 anilist_cache = data_dir / "anilist_cache"
 
 sqlite_db_path = data_dir / "data.sqlite"
-sqlite_db_uri = "sqlite:///{}".format(sqlite_db_path.absolute())
+sqlite_db_uri = f"sqlite:///{sqlite_db_path.absolute()}"
 
 unapproved_dir = data_dir / "unapproved"
 if not unapproved_dir.exists():

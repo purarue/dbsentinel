@@ -278,7 +278,7 @@ def request_metadata(
 ) -> Summary:
     assert entry_type in {"anime", "manga"}
     # use this as the key for the cache
-    url_key = "https://myanimelist.net/{}/{}".format(entry_type, id_)
+    url_key = f"https://myanimelist.net/{entry_type}/{id_}"
     # if this had failed previously, try again
     #
     # this may never actually be the case, but just want to make sure if we
@@ -286,7 +286,7 @@ def request_metadata(
     if rerequest_failed:
         sdata = mcache.get(url_key)
         if MetadataCache.is_404(sdata):
-            logger.info("re-requesting failed entry: {}".format(sdata.metadata))
+            logger.info(f"re-requesting failed entry: {sdata.metadata}")
             return mcache.refresh_data(url_key)
     elif force_rerequest:
         logger.info("re-requesting entry")
@@ -321,5 +321,5 @@ def has_metadata(
 ) -> bool:
     assert entry_type in {"anime", "manga"}
     # use this as the key for the cache
-    url_key = "https://myanimelist.net/{}/{}".format(entry_type, id_)
+    url_key = f"https://myanimelist.net/{entry_type}/{id_}"
     return metadata_cache().summary_cache.has(url_key)

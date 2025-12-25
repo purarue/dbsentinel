@@ -1,4 +1,5 @@
-from typing import Optional, Set, Dict, Any, Tuple, List, Mapping, NamedTuple
+from typing import Optional, Set, Dict, Any, Tuple, List, NamedTuple
+from collections.abc import Mapping
 from datetime import datetime, date, timedelta
 from asyncio import sleep
 from collections import defaultdict
@@ -79,7 +80,7 @@ class ImageData(NamedTuple):
 # ???
 # who even knows what gray nsfw means??
 # some that have hentai in manga are marked grey, others aren't?
-def is_nsfw(jdata: Dict[str, Any]) -> Optional[bool]:
+def is_nsfw(jdata: dict[str, Any]) -> bool | None:
     if "rating" in jdata:
         return bool(jdata["rating"] == "rx")
     else:
@@ -116,11 +117,11 @@ async def add_or_update(
     summary: Summary,
     entry_id: int,
     current_approved_status: Status | None = None,
-    old_status: Optional[Status] = None,
+    old_status: Status | None = None,
     in_db: set[int] | None = None,
     status_changed_at: datetime | None = None,
     force_update: bool = False,
-    mal_id_to_image: Optional[Dict[Tuple[EntryType, int], ImageData]] = None,
+    mal_id_to_image: dict[tuple[EntryType, int], ImageData] | None = None,
     refresh_images: bool = False,
     skip_images: bool = False,
 ) -> None:
@@ -278,7 +279,7 @@ async def add_or_update(
                 logger.info(
                     f"updating data for {entry_type} {aid} (status changed from {old_status} to {current_approved_status})"
                 )
-            kwargs: Dict[str, Any] = {}
+            kwargs: dict[str, Any] = {}
             if current_approved_status is not None:
                 kwargs["approved_status"] = current_approved_status
             if status_changed_at is not None:
@@ -338,9 +339,9 @@ async def add_or_update(
             sess.commit()
 
 
-async def status_map() -> Dict[str, Any]:
+async def status_map() -> dict[str, Any]:
     with Session(data_engine) as sess:
-        in_db: Dict[str, Any] = {
+        in_db: dict[str, Any] = {
             "anime_tup": set(
                 sess.query(AnimeMetadata.id, AnimeMetadata.approved_status)
             ),
@@ -348,8 +349,8 @@ async def status_map() -> Dict[str, Any]:
                 sess.query(MangaMetadata.id, MangaMetadata.approved_status)
             ),
         }
-    in_db["anime"] = set(i for i, _ in in_db["anime_tup"])
-    in_db["manga"] = set(i for i, _ in in_db["manga_tup"])
+    in_db["anime"] = {i for i, _ in in_db["anime_tup"]}
+    in_db["manga"] = {i for i, _ in in_db["manga_tup"]}
 
     in_db["anime_status"] = {i: s for i, s in in_db["anime_tup"]}
     in_db["manga_status"] = {i: s for i, s in in_db["manga_tup"]}
@@ -357,7 +358,7 @@ async def status_map() -> Dict[str, Any]:
     return in_db
 
 
-def malid_to_image() -> Dict[Tuple[EntryType, int], ImageData]:
+def malid_to_image() -> dict[tuple[EntryType, int], ImageData]:
     with Session(data_engine) as sess:
         return {
             (i.mal_entry_type, i.mal_id): ImageData(
@@ -384,7 +385,7 @@ def unapproved_summary_datetime(summary: Summary) -> datetime:
 
 
 def deleted_last_datetime(
-    summary: Summary, dates: Optional[List[datetime]] = None
+    summary: Summary, dates: list[datetime] | None = None
 ) -> datetime:
     if dates is None:
         dates = []
@@ -402,7 +403,7 @@ async def update_database(
     force_update_db: bool = False,
     skip_proxy_images: bool = False,
     # updates this many entries of data if the data is older than 'update_if_older_than'
-    update_outdated_metadata: Optional[int] = None,
+    update_outdated_metadata: int | None = None,
     update_if_older_than: timedelta = timedelta(days=182),  # 6 months
 ) -> None:
     if update_outdated_metadata is not None:
@@ -418,7 +419,7 @@ async def update_database(
 
     logger.info("Updating database...")
 
-    known: Set[str] = set()
+    known: set[str] = set()
     in_db = await status_map()
     mal_id_image_have = malid_to_image()
 
@@ -428,7 +429,7 @@ async def update_database(
     logger.info("db: reading from linear history...")
 
     # create a map from ID -> List[Entry]
-    history_map: Mapping[Tuple[int, str], List[Entry]] = defaultdict(list)
+    history_map: Mapping[tuple[int, str], list[Entry]] = defaultdict(list)
     for ent in iter_linear_history():
         history_map[(ent.entry_id, ent.e_type)].append(ent)
 

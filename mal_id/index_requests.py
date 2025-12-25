@@ -12,11 +12,11 @@ from mal_id.log import logger
 INDEX_BASE = "http://localhost:4001/api"
 
 
-def _debug() -> Dict[str, Any]:
+def _debug() -> dict[str, Any]:
     debug_url = f"{INDEX_BASE}/debug"
     req = requests.get(debug_url)
     req.raise_for_status()
-    return cast(Dict[str, Any], req.json())
+    return cast(dict[str, Any], req.json())
 
 
 class Index(NamedTuple):
@@ -24,7 +24,7 @@ class Index(NamedTuple):
     page_count: int
 
 
-def currently_requesting() -> Optional[Index]:
+def currently_requesting() -> Index | None:
     debug = _debug()
     if "current_request" not in debug:
         return None
@@ -40,7 +40,7 @@ def currently_requesting() -> Optional[Index]:
     )
 
 
-def queue() -> List[Index]:
+def queue() -> list[Index]:
     debug = _debug()
     assert "requests" in debug
     reqs = []

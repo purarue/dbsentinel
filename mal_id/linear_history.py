@@ -1,7 +1,8 @@
 import io
 from pathlib import Path
 from datetime import datetime, timezone
-from typing import NamedTuple, Iterator, Any
+from typing import NamedTuple, Any
+from collections.abc import Iterator
 
 import orjson
 from git.objects import Tree
