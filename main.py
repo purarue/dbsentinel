@@ -48,15 +48,16 @@ def linear_history() -> None:
 @mal.command(short_help="remove duplicate JSON data in linear history")
 def clean_linear_history() -> None:
     from collections import defaultdict
-    from typing import List, Mapping, Tuple
+    from typing import List, Tuple
+    from collections.abc import Mapping
 
     import orjson
 
     from mal_id.linear_history import Entry
 
-    merged: List[Entry] = []
+    merged: list[Entry] = []
     # create a map from ID -> List[Entry]
-    history_map: Mapping[Tuple[int, str], List[Entry]] = defaultdict(list)
+    history_map: Mapping[tuple[int, str], list[Entry]] = defaultdict(list)
 
     # read and group entries by ID/type
     with linear_history_unmerged.open("r") as f:
@@ -144,7 +145,7 @@ def update_metadata(request_failed: bool, print_missing: bool) -> None:
     default=None,
     help="rerequest and update data for oldest N entries",
 )
-def full_db_update(rerequest_oldest: Optional[int]) -> None:
+def full_db_update(rerequest_oldest: int | None) -> None:
     """
     this is expensive! -- only do this when necessary
 
@@ -167,8 +168,8 @@ def pages() -> None:
     """
     print page ranges from indexer
     """
-    click.echo("currently requesting: {}".format(currently_requesting()))
-    click.echo("queue: {}".format(queue()))
+    click.echo(f"currently requesting: {currently_requesting()}")
+    click.echo(f"queue: {queue()}")
 
 
 def _request_pages(
@@ -285,11 +286,11 @@ def anilist_update(only: str) -> None:
 
     if only is None or only == "anime":
         for mal_id in approved.anime:
-            ac.get("https://myanimelist.net/anime/{}".format(mal_id))
+            ac.get(f"https://myanimelist.net/anime/{mal_id}")
 
     if only is None or only == "manga":
         for mal_id in approved.manga:
-            ac.get("https://myanimelist.net/manga/{}".format(mal_id))
+            ac.get(f"https://myanimelist.net/manga/{mal_id}")
 
 
 @dbs.command(short_help="print syobocal urls which have MAL urls")
@@ -363,8 +364,8 @@ def generate_media_types(output: Path) -> None:
         )
     )
 
-    click.echo("anime types: {}".format(anime_types))
-    click.echo("manga types: {}".format(manga_types))
+    click.echo(f"anime types: {anime_types}")
+    click.echo(f"manga types: {manga_types}")
 
 
 @server.command()

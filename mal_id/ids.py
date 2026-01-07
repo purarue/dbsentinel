@@ -18,8 +18,8 @@ from mal_id.metadata_cache import MAL_API_LOCK
 
 
 class Approved(NamedTuple):
-    anime: Set[int]
-    manga: Set[int]
+    anime: set[int]
+    manga: set[int]
 
 
 def approved_ids() -> Approved:
@@ -41,15 +41,15 @@ class Entry(NamedTuple):
 
 
 class Unapproved(NamedTuple):
-    anime_info: List[Entry]
-    manga_info: List[Entry]
+    anime_info: list[Entry]
+    manga_info: list[Entry]
 
     @property
-    def anime(self) -> Set[int]:
+    def anime(self) -> set[int]:
         return {info.id for info in self.anime_info}
 
     @property
-    def manga(self) -> Set[int]:
+    def manga(self) -> set[int]:
         return {info.id for info in self.manga_info}
 
 
@@ -59,11 +59,11 @@ UNAPPROVED_API_BASE = "https://purarue.xyz/mal_unapproved/api/"
 SANITY_CHECK_AMOUNT = 10
 
 
-def _request_unapproved(url: str) -> List[Any]:
-    logger.info("Requesting unapproved: {}".format(url))
+def _request_unapproved(url: str) -> list[Any]:
+    logger.info(f"Requesting unapproved: {url}")
     req = requests.get(url)
     req.raise_for_status()
-    data: List[Any] = req.json()
+    data: list[Any] = req.json()
     if len(data) < SANITY_CHECK_AMOUNT:
         raise RuntimeError(
             "Not enough unapproved entries -- server may be starting/down"
@@ -76,7 +76,7 @@ REREQUEST_TIME = 60 * 5
 
 
 @lru_cache(maxsize=2)
-def _read_unapproved(path: Path, mtime: int) -> List[Any]:
+def _read_unapproved(path: Path, mtime: int) -> list[Any]:
     """
     Reads the unapproved anime/manga from the cache file,
     or from memory if the mtime hasn't changed
@@ -91,14 +91,14 @@ def _read_unapproved(path: Path, mtime: int) -> List[Any]:
 
 def _update_unapproved(
     etype: str, cache_filepath: Path, skip_request: bool
-) -> List[Any]:
+) -> list[Any]:
     """
     manages requesting/updating the cachefiles for anime/manga
 
     if the data hasn't changed, this will return the memcached data
     using the path/mtime as a key in the lru_cache above
     """
-    data: List[Any] = []
+    data: list[Any] = []
     if skip_request:
         data = []
         write_data = False
@@ -111,7 +111,7 @@ def _update_unapproved(
         else:
             if cache_filepath.stat().st_mtime < (time.time() - REREQUEST_TIME):
                 try:
-                    logger.debug("Unapproved expired: {}".format(etype))
+                    logger.debug(f"Unapproved expired: {etype}")
                     data = _request_unapproved(url)
                 except (RuntimeError, requests.exceptions.RequestException) as e:
                     logger.exception(str(e), exc_info=e)
@@ -146,7 +146,7 @@ def unapproved_ids() -> Unapproved:
     max_tries=3,
     on_backoff=backoff_handler,
 )
-def user_recently_updated(list_type: str, username: str, offset: int) -> Set[int]:
+def user_recently_updated(list_type: str, username: str, offset: int) -> set[int]:
     time.sleep(5)
     assert list_type in {"anime", "manga"}
     url = BASE_URL.format(list_type=list_type, username=username, offset=offset)
@@ -164,7 +164,7 @@ def user_recently_updated(list_type: str, username: str, offset: int) -> Set[int
         )
     data = req.json()
     key = "anime_id" if list_type == "anime" else "manga_id"
-    return set([int(entry[key]) for entry in data])
+    return {int(entry[key]) for entry in data}
 
 
 def _estimate_page(missing_id: int, sorted_ids: list[int]) -> int:
@@ -212,7 +212,7 @@ def estimate_using_user_recent(list_type: str, username: str) -> int:
 
 
 def estimate_all_users_max(
-    user_names: List[str],
+    user_names: list[str],
     check_type: str = "anime",
 ) -> int:
     max_pages = [estimate_using_user_recent(check_type, u) for u in user_names]
@@ -231,7 +231,7 @@ def estimate_deleted_entry(animelist_xml: Path) -> int:
         return 0
 
     anime_ids = approved_ids().anime
-    deleted_ids: Set[int] = anime_ids - my_user_ids
+    deleted_ids: set[int] = anime_ids - my_user_ids
 
     if len(deleted_ids) == 0:
         return 0

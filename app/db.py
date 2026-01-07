@@ -1,5 +1,6 @@
 import enum
-from typing import Iterator, Optional, Dict, Any
+from typing import Optional, Dict, Any
+from collections.abc import Iterator
 from datetime import datetime, date
 
 from sqlmodel import SQLModel, Field, create_engine, Session, Column, JSON
@@ -36,18 +37,18 @@ class ApprovedBase(SQLModel, table=False):
     # approved status of the entry
     id: int = Field(primary_key=True)
     title: str
-    nsfw: Optional[bool]
-    json_data: Dict[str, Any] = Field(default={}, sa_column=Column(JSON))
+    nsfw: bool | None
+    json_data: dict[str, Any] = Field(default={}, sa_column=Column(JSON))
     approved_status: Status = Field(default=Status.UNAPPROVED)
-    media_type: Optional[str] = Field(default=None)
-    member_count: Optional[int] = Field(default=None)
-    average_episode_duration: Optional[int] = Field(default=None)
+    media_type: str | None = Field(default=None)
+    member_count: int | None = Field(default=None)
+    average_episode_duration: int | None = Field(default=None)
     # when the entry was approved/denied/deleted etc.
     status_changed_at: datetime
     # when metadata for this was updated
     updated_at: datetime
-    start_date: Optional[date]
-    end_date: Optional[date]
+    start_date: date | None
+    end_date: date | None
 
 
 class AnimeMetadata(ApprovedBase, table=True):
