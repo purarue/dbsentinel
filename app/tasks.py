@@ -19,7 +19,7 @@ router = APIRouter()
 
 def _fetch_data(
     entry_type: EntryType, entry_id: int
-) -> Union[AnimeMetadata, MangaMetadata]:
+) -> AnimeMetadata | MangaMetadata:
     use_model = AnimeMetadata if entry_type == "anime" else MangaMetadata
     assert hasattr(use_model, "id")
     with Session(data_engine) as sess:
@@ -45,7 +45,7 @@ class Error(BaseModel):
 @router.get("/refresh_entry")
 async def refresh_entry(
     entry_type: EntryType, entry_id: int, response: Response
-) -> Union[AnimeMetadata, MangaMetadata, Error]:
+) -> AnimeMetadata | MangaMetadata | Error:
     """
     refreshes a single entry in the database
     """
