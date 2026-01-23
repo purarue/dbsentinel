@@ -142,7 +142,7 @@ mypy==1.5.1
     # via -r requirements.in
 mypy-extensions==1.0.0
     # via mypy
-orjson==3.9.7
+orjson==3.11.5
     # via -r requirements.in
 outcome==1.2.0
     # via trio
