@@ -93,7 +93,7 @@ httptools==0.6.0
     # via uvicorn
 httpx==0.24.1
     # via -r requirements.in
-idna==3.4
+idna==3.7
     # via
     #   anyio
     #   httpx
