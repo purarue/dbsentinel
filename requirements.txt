@@ -173,7 +173,7 @@ pydantic==1.10.13
     #   sqlmodel
 pyflakes==3.1.0
     # via flake8
-pygments==2.16.1
+pygments==2.20.0
     # via
     #   ipython
     #   pytest
