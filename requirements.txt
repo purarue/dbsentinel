@@ -201,7 +201,7 @@ readability-lxml==0.8.1
     # via url-cache
 regex==2023.8.8
     # via dateparser
-requests==2.32.4
+requests==2.33.0
     # via
     #   -r requirements.in
     #   lassie
