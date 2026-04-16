@@ -124,7 +124,7 @@ lxml==4.9.3
     #   url-cache
 lxml-stubs==0.4.0
     # via -r requirements.in
-mako==1.2.4
+mako==1.3.11
     # via alembic
 malexport==0.1.4
     # via -r requirements.in
