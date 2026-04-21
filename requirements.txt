@@ -185,7 +185,7 @@ python-dateutil==2.8.2
     # via
     #   botocore
     #   dateparser
-python-dotenv==1.0.0
+python-dotenv==1.2.2
     # via uvicorn
 python-oembed==0.2.4
     # via lassie
