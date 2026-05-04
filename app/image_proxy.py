@@ -75,6 +75,10 @@ async def _get_image_bytes(url: str) -> bytes | None:
             logger.warning(f"image_proxy: got 429 for {url}")
             time.sleep(15)
             return await _get_image_bytes(url)
+        elif resp.status_code == 500:
+            logger.warning(f"image_proxy: got 500 for {url}")
+            time.sleep(15)
+            return None
         resp.raise_for_status()
         return resp.content
 
